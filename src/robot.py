@@ -54,22 +54,22 @@ class MyRobot(wpilib.SampleRobot):
                 self.accelTo(-self.maxSpeed, 0.0025, frontRightChannel)
                 self.accelTo(-self.maxSpeed, 0.0025, frontLeftChannel)
                 self.accelTo(-self.maxSpeed, 0.0025, rearLeftChannel)
-            elif self.stick.getRawButton(14):#Turn Left
+            elif self.stick.getRawButton(3):#Turn Left
                 self.accelTo(self.maxSpeed, 0.0025, rearRightChannel)
                 self.accelTo(self.maxSpeed, 0.0025, frontRightChannel)
                 self.accelTo(-self.maxSpeed, 0.0025, frontLeftChannel)
                 self.accelTo(-self.maxSpeed, 0.0025, rearLeftChannel)
-            elif self.stick.getRawButton(16):#Turn Right
+            elif self.stick.getRawButton(2):#Turn Right
                 self.accelTo(-self.maxSpeed, 0.0025, rearRightChannel)
                 self.accelTo(-self.maxSpeed, 0.0025, frontRightChannel)
                 self.accelTo(self.maxSpeed, 0.0025, frontLeftChannel)
                 self.accelTo(self.maxSpeed, 0.0025, rearLeftChannel)
-            elif self.stick.getRawButton():#Strafe Left
+            elif self.stick.getRawButton(16):#Strafe right
                 self.accelTo(self.maxSpeed, 0.0025, rearRightChannel)
                 self.accelTo(-self.maxSpeed, 0.0025, frontRightChannel)
                 self.accelTo(self.maxSpeed, 0.0025, frontLeftChannel)
                 self.accelTo(-self.maxSpeed, 0.0025, rearLeftChannel)
-            elif self.stick.getRawButton():#Strafe Right
+            elif self.stick.getRawButton(14):#Strafe Left
                 self.accelTo(self.maxSpeed, 0.0025, rearRightChannel)
                 self.accelTo(-self.maxSpeed, 0.0025, frontRightChannel)
                 self.accelTo(self.maxSpeed, 0.0025, frontLeftChannel)
