@@ -10,13 +10,14 @@ from wpilib import RobotDrive
 class MyRobot(wpilib.SampleRobot):
     
     # Channels for the wheels
-    frontLeftChannel    = 2
-    rearLeftChannel     = 3
-    frontRightChannel   = 1
-    rearRightChannel    = 0
+    frontLeftChannel = 2
+    rearLeftChannel = 3
+    frontRightChannel = 1
+    rearRightChannel = 0
     
     # The channel on the driver station that the joystick is connected to
-    joystickChannel     = 0;
+    joystickChannel = 0;
+    
 
     def robotInit(self):
         '''Robot initialization function'''
@@ -34,56 +35,129 @@ class MyRobot(wpilib.SampleRobot):
         self.motorArr = [self.flMotor, self.rlMotor, self.frMotor, self.rrMotor]
 
         self.stick = wpilib.Joystick(self.joystickChannel)
+        
+        self.maxSpeed = .5
+        self.currSpeed = [0, 0, 0, 0]
     
     def operatorControl(self):
         '''Runs the motors with Mecanum drive.'''
         
         while self.isOperatorControl() and self.isEnabled():
             
-            # Use the joystick X axis for lateral movement, Y axis for forward movement, and Z axis for rotation.
-            # This sample does not use field-oriented drive, so the gyro input is set to zero.
-            forwardAxis = self.stick.getRawAxis(2) * -1
-            backwardAxis = self.stick.getRawAxis(3)
-            yAxis = forwardAxis + backwardAxis
-            
-            rotateRightAxis = self.stick.getRawAxis(0) * -1
-            
-            strafeRightAxis = self.stick.getRawAxis(4) * -1
-            
-            self.goForward(yAxis)
-            if abs(rotateRightAxis) >= 0.1:
-                self.rotateRight(rotateRightAxis)
-            if abs(strafeRightAxis) >= 0.1:
-                self.strafeRight(strafeRightAxis)
-            wpilib.Timer.delay(0.005)   # wait 5ms to avoid hogging CPU cycles
-    
-    def goForward(self, speed):
-        for x in range(len(self.motorArr)):
-            if x<2:
-                self.motorArr[x].set(speed)
+            if self.stick.getRawButton(13):
+                self.accelTo(self.maxSpeed, 0.0025, 0)
+                self.accelTo(self.maxSpeed, 0.0025, 1)
+                self.accelTo(self.maxSpeed, 0.0025, 2)
+                self.accelTo(self.maxSpeed, 0.0025, 3)
+            elif self.stick.getRawButton(15):
+                self.accelTo(-self.maxSpeed, 0.0025, 0)
+                self.accelTo(-self.maxSpeed, 0.0025, 1)
+                self.accelTo(-self.maxSpeed, 0.0025, 2)
+                self.accelTo(-self.maxSpeed, 0.0025, 3)
+            elif self.stick.getRawButton(14):
+                self.accelTo(self.maxSpeed, 0.0025, 0)
+                self.accelTo(self.maxSpeed, 0.0025, 1)
+                self.accelTo(-self.maxSpeed, 0.0025, 2)
+                self.accelTo(-self.maxSpeed, 0.0025, 3)
+            elif self.stick.getRawButton(16):
+                self.accelTo(-self.maxSpeed, 0.0025, 0)
+                self.accelTo(-self.maxSpeed, 0.0025, 1)
+                self.accelTo(self.maxSpeed, 0.0025, 2)
+                self.accelTo(self.maxSpeed, 0.0025, 3)
             else:
-                self.motorArr[x].set(-speed)          
+                self.accelTo(0, 0.0025, 0)
+                self.accelTo(0, 0.0025, 1)
+                self.accelTo(0, 0.0025, 2)
+                self.accelTo(0, 0.0025, 3)
+            
+            self.moveMotors()    
+#             print("0: " + str(self.currSpeed[0]) + ", 1: " + str(self.currSpeed[1]) + ", 2: " + str(self.currSpeed[2]) + ", 3:" + str(self.currSpeed[3]))
+        
+#         self.resetMotors()
+#         
+#         while self.isOperatorControl() and self.isEnabled():
+#             if self.stick.getRawButton(13):
+#                 self.flMotor.set(self.defaultSpeed)
+#             elif self.stick.getRawButton(15):
+#                 self.rlMotor.set(self.defaultSpeed)
+#             elif self.stick.getRawButton(14):
+#                 self.frMotor.set(self.defaultSpeed)
+#             elif self.stick.getRawButton(16):
+#                 self.rrMotor.set(self.defaultSpeed)
+        
+#         while self.isOperatorControl() and self.isEnabled():
+#              
+#             # Use the joystick X axis for lateral movement, Y axis for forward movement, and Z axis for rotation.
+#             # This sample does not use field-oriented drive, so the gyro input is set to zero.
+#             if (self.stick.getRawButton(13)):
+#                 yAxis = self.defaultSpeed;
+#             elif (self.stick.getRawButton(15)):
+#                 yAxis = -self.defaultSpeed;
+#             else:
+#                 yAxis = 0;
+#              
+#             self.goForward(yAxis)
+#              
+#             if self.stick.getRawButton(2):
+#                 rotateRightAxis = self.defaultSpeed;
+#             elif self.stick.getRawButton(3):
+#                 rotateLeftAxis = self.defaultSpeed;
+#             else:
+#                 rotateRightAxis = 0;
+#                 rotateLeftAxis = 0;
+#              
+#             if rotateRightAxis > 0:
+#                 self.rotateRight(rotateRightAxis)
+#             elif rotateLeftAxis > 0:
+#                 self.rotateLeft(rotateLeftAxis)
+#              
+#             if (self.stick.getRawButton(14)):
+#                 xAxis = self.defaultSpeed*2;
+#             elif (self.stick.getRawButton(16)):
+#                 xAxis = -self.defaultSpeed*2;
+#             else:
+#                 xAxis = 0;
+#              
+#             if(abs(yAxis) <= 0.1 and abs(xAxis) >= 0.1):
+#                 self.strafe(xAxis)
+#              
+#             self.goForward(yAxis)
+#              
+#             # if abs(strafeRightAxis) >= 0.1:
+#             #   self.strafeRight(strafeRightAxis)
+#             wpilib.Timer.delay(0.005)  # wait 5ms to avoid hogging CPU cycles
+    
+    
+    def accelTo(self, targetSpeed, speed, mNum):
+        if self.currSpeed[mNum] < targetSpeed:
+            self.currSpeed[mNum] += speed
+        elif self.currSpeed[mNum] > targetSpeed:
+            self.currSpeed[mNum] -= speed
+    
+    def moveMotors(self):
+        for x in range(len(self.motorArr)):
+            if x < 2:
+                self.motorArr[x].set(self.currSpeed[x])
+            else:
+                self.motorArr[x].set(-self.currSpeed[x])
                   
     def goBackwards(self, speed):
         self.goForward(-speed)
         
     def rotateLeft(self, speed):
+        self.rotateRight(-speed)
+        
+    def rotateRight(self, speed):
         self.motorArr[0].set(speed)
         self.motorArr[1].set(speed)
         self.motorArr[2].set(speed)
         self.motorArr[3].set(speed)
-        
-    def rotateRight(self, speed):
-        self.rotateLeft(-speed)
     
-    def strafeLeft(self, speed):
+    def strafe(self, speed):
         self.motorArr[0].set(-speed)
         self.motorArr[1].set(speed)
         self.motorArr[2].set(speed)
         self.motorArr[3].set(-speed)
-        
-    def strafeRight(self, speed):
-        self.strafeLeft(-speed)
         
     def resetMotors(self):
         self.flMotor.set(0)
