@@ -16,7 +16,7 @@ class MyRobot(wpilib.SampleRobot):
     rearRightChannel = 0
 
     # The channel on the driver station that the joystick is connected to
-    joystickChannel = 0;
+    joystickChannel = 0
 
 
     def robotInit(self):
@@ -36,7 +36,8 @@ class MyRobot(wpilib.SampleRobot):
 
         self.stick = wpilib.Joystick(self.joystickChannel)
 
-        self.maxSpeed = .5
+        self.maxSpeed = .5#This is the current speed of the robot
+        self.totalMaxSpeed = 1#This is the max speed
         self.currSpeed = [0, 0, 0, 0]
 
     def operatorControl(self):
@@ -74,69 +75,20 @@ class MyRobot(wpilib.SampleRobot):
                 self.accelTo(-self.maxSpeed, 0.0025, self.frontRightChannel)
                 self.accelTo(self.maxSpeed, 0.0025, self.frontLeftChannel)
                 self.accelTo(-self.maxSpeed, 0.0025, self.rearLeftChannel)
+            elif self.stick.getRawButton(10):#Increase Speed
+                if not (self.maxSpeed > self.totalMaxSpeed):
+                    self.maxSpeed =+ .001
+            elif self.stick.getRawButton(8):#Decrease Speed
+                if not (self.maxSpeed < 0):
+                    self.maxSpeed =- .001
             else:#Stop
-                self.accelTo(0, 0.0025, 0)
-                self.accelTo(0, 0.0025, 1)
-                self.accelTo(0, 0.0025, 2)
-                self.accelTo(0, 0.0025, 3)
+                #Change 0.0050 to make deceleration slower or fasters
+                self.accelTo(0, 0.0050, 0)
+                self.accelTo(0, 0.0050, 1)
+                self.accelTo(0, 0.0050, 2)
+                self.accelTo(0, 0.0050, 3)
 
             self.moveMotors()
-#             print("0: " + str(self.currSpeed[0]) + ", 1: " + str(self.currSpeed[1]) + ", 2: " + str(self.currSpeed[2]) + ", 3:" + str(self.currSpeed[3]))
-
-#         self.resetMotors()
-#
-#         while self.isOperatorControl() and self.isEnabled():
-#             if self.stick.getRawButton(13):
-#                 self.flMotor.set(self.defaultSpeed)
-#             elif self.stick.getRawButton(15):
-#                 self.rlMotor.set(self.defaultSpeed)
-#             elif self.stick.getRawButton(14):
-#                 self.frMotor.set(self.defaultSpeed)
-#             elif self.stick.getRawButton(16):
-#                 self.rrMotor.set(self.defaultSpeed)
-
-#         while self.isOperatorControl() and self.isEnabled():
-#
-#             # Use the joystick X axis for lateral movement, Y axis for forward movement, and Z axis for rotation.
-#             # This sample does not use field-oriented drive, so the gyro input is set to zero.
-#             if (self.stick.getRawButton(13)):
-#                 yAxis = self.defaultSpeed;
-#             elif (self.stick.getRawButton(15)):
-#                 yAxis = -self.defaultSpeed;
-#             else:
-#                 yAxis = 0;
-#
-#             self.goForward(yAxis)
-#
-#             if self.stick.getRawButton(2):
-#                 rotateRightAxis = self.defaultSpeed;
-#             elif self.stick.getRawButton(3):
-#                 rotateLeftAxis = self.defaultSpeed;
-#             else:
-#                 rotateRightAxis = 0;
-#                 rotateLeftAxis = 0;
-#
-#             if rotateRightAxis > 0:
-#                 self.rotateRight(rotateRightAxis)
-#             elif rotateLeftAxis > 0:
-#                 self.rotateLeft(rotateLeftAxis)
-#
-#             if (self.stick.getRawButton(14)):
-#                 xAxis = self.defaultSpeed*2;
-#             elif (self.stick.getRawButton(16)):
-#                 xAxis = -self.defaultSpeed*2;
-#             else:
-#                 xAxis = 0;
-#
-#             if(abs(yAxis) <= 0.1 and abs(xAxis) >= 0.1):
-#                 self.strafe(xAxis)
-#
-#             self.goForward(yAxis)
-#
-#             # if abs(strafeRightAxis) >= 0.1:
-#             #   self.strafeRight(strafeRightAxis)
-#             wpilib.Timer.delay(0.005)  # wait 5ms to avoid hogging CPU cycles
-
 
     def accelTo(self, targetSpeed, speed, mNum):
         if self.currSpeed[mNum] < targetSpeed:
