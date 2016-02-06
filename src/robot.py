@@ -10,10 +10,10 @@ from wpilib import RobotDrive
 class MyRobot(wpilib.SampleRobot):
 
     # Channels for the wheels
-    frontLeftChannel = 2
-    rearLeftChannel = 3
+    frontLeftChannel = 0
+    rearLeftChannel = 2 #not victor(talon)
     frontRightChannel = 1
-    rearRightChannel = 0
+    rearRightChannel = 3
 
     # The channel on the driver station that the joystick is connected to
     joystickChannel = 0
@@ -22,11 +22,13 @@ class MyRobot(wpilib.SampleRobot):
     def robotInit(self):
         '''Robot initialization function'''
 
-        self.flMotor = wpilib.Talon(2)
-        self.rlMotor = wpilib.Talon(3)
-        self.frMotor = wpilib.Talon(1)
-        self.rrMotor = wpilib.Talon(0)
-
+        self.rlMotor = wpilib.Victor(2)
+        self.rrMotor = wpilib.Talon(3)
+        self.frMotor = wpilib.Victor(1)
+        self.flMotor = wpilib.Victor(0)
+        
+        self.rlMotor.isInverted = True
+               
         self.flMotor.set(0)
         self.rlMotor.set(0)
         self.frMotor.set(0)
@@ -77,10 +79,10 @@ class MyRobot(wpilib.SampleRobot):
                 self.accelTo(-self.maxSpeed, 0.0025, self.rearLeftChannel)
             elif self.stick.getRawButton(10):#Increase Speed
                 if not (self.maxSpeed > self.totalMaxSpeed):
-                    self.maxSpeed =+ .001
+                    self.maxSpeed += 0.001
             elif self.stick.getRawButton(8):#Decrease Speed
                 if not (self.maxSpeed < 0):
-                    self.maxSpeed =- .001
+                    self.maxSpeed -= 0.001
             else:#Stop
                 #Change 0.0050 to make deceleration slower or fasters
                 self.accelTo(0, 0.0050, 0)
@@ -101,7 +103,7 @@ class MyRobot(wpilib.SampleRobot):
             if x < 2:
                 self.motorArr[x].set(self.currSpeed[x])
             else:
-                self.motorArr[x].set(-self.currSpeed[x])
+                self.motorArr[x].set(self.currSpeed[x])
 
     def goBackwards(self, speed):
         self.goForward(-speed)
