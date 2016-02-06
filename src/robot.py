@@ -18,7 +18,6 @@ class MyRobot(wpilib.SampleRobot):
     # The channel on the driver station that the joystick is connected to
     joystickChannel = 0
 
-
     def robotInit(self):
         '''Robot initialization function'''
 
