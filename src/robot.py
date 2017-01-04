@@ -22,12 +22,14 @@ class MyRobot(wpilib.SampleRobot):
         '''Robot initialization function'''
 
         self.rlMotor = wpilib.Victor(2)
-        self.rrMotor = wpilib.Talon(3)
+        self.rrMotor = wpilib.Victor(3)
         self.frMotor = wpilib.Victor(1)
         self.flMotor = wpilib.Victor(0)
-        
-        self.rlMotor.isInverted = True
-               
+
+        self.rrMotor.setInverted(True)
+        self.rlMotor.setInverted(True)
+
+
         self.flMotor.set(0)
         self.rlMotor.set(0)
         self.frMotor.set(0)
@@ -46,40 +48,40 @@ class MyRobot(wpilib.SampleRobot):
 
         while self.isOperatorControl() and self.isEnabled():
             #Forward
-            if self.stick.getRawButton(13):
+            if self.stick.getRawButton(3):
                 self.accelTo(self.maxSpeed, 0.0025, self.rearRightChannel)
                 self.accelTo(self.maxSpeed, 0.0025, self.frontRightChannel)
                 self.accelTo(self.maxSpeed, 0.0025, self.frontLeftChannel)
                 self.accelTo(self.maxSpeed, 0.0025, self.rearLeftChannel)
-            elif self.stick.getRawButton(15):#Backward
+            elif self.stick.getRawButton(8):#Backward
                 self.accelTo(-self.maxSpeed, 0.0025, self.rearRightChannel)
                 self.accelTo(-self.maxSpeed, 0.0025, self.frontRightChannel)
                 self.accelTo(-self.maxSpeed, 0.0025, self.frontLeftChannel)
                 self.accelTo(-self.maxSpeed, 0.0025, self.rearLeftChannel)
-            elif self.stick.getRawButton(2):#Turn Left
+            elif self.stick.getRawButton(9):#Turn Left
                 self.accelTo(self.maxSpeed, 0.0025, self.rearRightChannel)
                 self.accelTo(self.maxSpeed, 0.0025, self.frontRightChannel)
                 self.accelTo(-self.maxSpeed, 0.0025, self.frontLeftChannel)
                 self.accelTo(-self.maxSpeed, 0.0025, self.rearLeftChannel)
-            elif self.stick.getRawButton(3):#Turn Right
+            elif self.stick.getRawButton(7):#Turn Right
                 self.accelTo(-self.maxSpeed, 0.0025, self.rearRightChannel)
                 self.accelTo(-self.maxSpeed, 0.0025, self.frontRightChannel)
                 self.accelTo(self.maxSpeed, 0.0025, self.frontLeftChannel)
                 self.accelTo(self.maxSpeed, 0.0025, self.rearLeftChannel)
-            elif self.stick.getRawButton(14):#Strafe right
+            elif self.stick.getRawButton(4):#Strafe right
                 self.accelTo(-self.maxSpeed, 0.0025, self.rearRightChannel)
                 self.accelTo(self.maxSpeed, 0.0025, self.frontRightChannel)
                 self.accelTo(-self.maxSpeed, 0.0025, self.frontLeftChannel)
                 self.accelTo(self.maxSpeed, 0.0025, self.rearLeftChannel)
-            elif self.stick.getRawButton(16):#Strafe Left
+            elif self.stick.getRawButton(2):#Strafe Left
                 self.accelTo(self.maxSpeed, 0.0025, self.rearRightChannel)
                 self.accelTo(-self.maxSpeed, 0.0025, self.frontRightChannel)
                 self.accelTo(self.maxSpeed, 0.0025, self.frontLeftChannel)
                 self.accelTo(-self.maxSpeed, 0.0025, self.rearLeftChannel)
-            elif self.stick.getRawButton(10):#Increase Speed
+            elif self.stick.getRawButton(1):#Increase Speed
                 if not (self.maxSpeed > self.totalMaxSpeed):
                     self.maxSpeed += 0.001
-            elif self.stick.getRawButton(8):#Decrease Speed
+            elif self.stick.getRawButton(6):#Decrease Speed
                 if not (self.maxSpeed < 0):
                     self.maxSpeed -= 0.001
             else:#Stop
